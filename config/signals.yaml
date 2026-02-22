@@ -1,0 +1,52 @@
+# Stage 4 signal configuration
+signals:
+  term_structure_slope:
+    enabled: true
+    zscore_window: 3
+
+  term_structure_curvature:
+    enabled: true
+    zscore_window: 3
+
+  carry_roll_down:
+    enabled: true
+
+  vrp_proxy:
+    enabled: true
+
+  pca_factors:
+    enabled: true
+    n_components: 2
+    min_obs: 3
+
+# Shared term-structure settings (used by slope/curvature/carry/PCA)
+term_structure:
+  price_column: close
+  # Stage 4 MVP maps symbols to synthetic tenor buckets for available sample data.
+  symbol_to_tenor:
+    SPY: 1
+    VIXY: 2
+    '^VIX': 3
+
+  slope_short_tenor: 1
+  slope_long_tenor: 2
+
+  curvature_front_tenor: 1
+  curvature_mid_tenor: 2
+  curvature_back_tenor: 3
+
+  front_tenor: 1
+  next_tenor: 2
+  tenor_gap_months: 1.0
+  trading_days_per_year: 252
+
+vrp_proxy:
+  iv_symbol: VIXY
+  rv_symbol: SPY
+  price_column: close
+  rv_window: 3
+  trading_days_per_year: 252
+  iv_scale: 100.0
+
+execution:
+  signal_shift_days: 1

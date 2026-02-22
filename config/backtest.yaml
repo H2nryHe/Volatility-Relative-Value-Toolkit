@@ -1,0 +1,30 @@
+# Stage 5 backtest configuration
+paths:
+  output_dir: outputs/backtests
+
+backtest:
+  initial_capital: 1000000
+  primary_symbol: SPY
+  price_column: close
+
+  # Explicit execution timing; signal date t executes at t + lag days.
+  signal_column: signal_term_structure_slope
+  carry_signal_column: signal_carry_roll_down
+  signal_execution_lag_days: 1
+  enforce_next_bar_execution: true
+
+  # Signal normalization for position mapping: tanh(signal / signal_scale)
+  signal_scale: 10.0
+
+costs:
+  commission_bps: 1.0
+  slippage_bps: 1.0
+  # Roll-specific cost applied to roll trades (can differ from regular trade costs).
+  roll_cost_bps: 2.5
+
+risk_controls:
+  position_cap_abs: 1.0
+  leverage_cap: 1.0
+  enable_risk_target: true
+  target_volatility: 0.10
+  vol_window: 3

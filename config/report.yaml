@@ -1,0 +1,25 @@
+# Stage 7 reporting configuration
+report:
+  title: Volatility Relative Value Toolkit Dashboard
+  output_dir: outputs/reports
+  formats: [html, pdf]
+
+branding:
+  author: Research
+
+sections:
+  rv_logic: "Relative-value volatility framework focused on term structure, carry/roll-down, VRP, and PCA diagnostics; this report summarizes process and risk, not directional prediction."
+
+paths:
+  qa_report: outputs/data/qa/qa_report.json
+  backtest_summary: outputs/backtests/summary.json
+  pnl: outputs/backtests/pnl.parquet
+  attribution: outputs/backtests/attribution.parquet
+  risk_metrics: outputs/backtests/risk_metrics.json
+  stress_report: outputs/backtests/stress_report.parquet
+  exposures: outputs/backtests/exposures.parquet
+
+assumptions:
+  signal_timing: "Signals are lagged and executed with configured delay to avoid lookahead."
+  costs: "Commission/slippage/roll costs are config-driven and included in net PnL."
+  roll: "Roll trades are generated from Stage 3 roll_log when events exist."

@@ -1,0 +1,20 @@
+# Stage 6 risk analytics configuration
+risk:
+  # Historical VaR/CVaR confidence levels (loss-positive convention: losses = -returns)
+  var_confidence: 0.95
+  cvar_confidence: 0.95
+  horizon_days: 1
+  drawdown_window_days: 252
+
+exposures:
+  window: 3
+  benchmark_return_column: daily_return
+
+stress:
+  windows:
+    - name: sample_window_full
+      start: "2024-01-01"
+      end: "2024-12-31"
+    - name: sample_window_partial_overlap
+      start: "2025-01-01"
+      end: "2025-03-31"

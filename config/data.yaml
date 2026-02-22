@@ -1,0 +1,84 @@
+# Stage 2 data pipeline config: load + standardize + metadata
+project:
+  name: volatility-relative-value-toolkit
+
+data:
+  timezone: UTC
+  output_dir: outputs/data
+  cache:
+    # Stage 8 reproducibility cache control.
+    # false: reuse existing stage artifacts if config hashes match.
+    # true: force rebuild in scripts.reproduce.
+    force_refresh: false
+  stage3:
+    standardized_input_dir: outputs/data/standardized
+    clean_output_dir: outputs/data/clean
+    continuous_output_dir: outputs/data/continuous
+    qa_output_dir: outputs/data/qa
+
+  # Source-native loaders. MVP includes one CSV sample and one optional yfinance stub.
+  raw_sources:
+    - name: sample_market_csv
+      enabled: true
+      loader: csv
+      path: data_pipeline/samples/sample_prices.csv
+      asset_type: etf
+      source: local_sample_csv
+      date_column: Date
+      symbol_column: Ticker
+      column_mapping:
+        open: Open
+        high: High
+        low: Low
+        close: Close
+        volume: Volume
+
+    - name: yfinance_stub_vix
+      enabled: false
+      loader: yfinance
+      asset_type: index
+      source: yfinance_stub
+      symbols: ["^VIX"]
+      start: "2024-01-02"
+      end: "2024-01-10"
+      date_column: Date
+      symbol_column: Ticker
+      column_mapping:
+        open: Open
+        high: High
+        low: Low
+        close: Close
+        volume: Volume
+
+qa:
+  duplicate_key: [date, symbol]
+  allow_negative_prices: false
+  zero_heavy_fields: [volume]
+  zero_heavy_threshold: 0.20
+  log_level: INFO
+  fill:
+    enabled: true
+    method: ffill
+    fields: [open, high, low, close]
+    limit: 1
+    fill_volume: false
+  outlier:
+    method: zscore
+    fields: [close]
+    zscore_threshold: 2.0
+    min_obs: 3
+
+calendar:
+  frequency: B
+  # If null, use observed min/max in standardized inputs.
+  start:
+  end:
+
+roll:
+  enabled: true
+  method: vx_roll_n_days_before_expiry
+  n_days_before_expiry: 5
+  # Optional metadata columns. If absent in Stage 2 standardized data, roll_log is empty by design.
+  contract_column: contract
+  expiry_column: expiry
+  root_column: root_symbol
