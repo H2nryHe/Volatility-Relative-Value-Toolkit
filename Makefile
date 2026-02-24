@@ -7,7 +7,8 @@ setup:
 	$(PYTHON) -m pip install -e ".[dev]"
 
 lint:
-	@echo "lint: no-op MVP (add ruff checks in later stages)"
+	$(PYTHON) -m ruff check .
+	$(PYTHON) -m ruff format --check .
 
 test:
 	$(PYTHON) -m pytest -q
